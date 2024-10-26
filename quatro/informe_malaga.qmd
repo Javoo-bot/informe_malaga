@@ -1,0 +1,190 @@
+---
+title: "Análisis de Datos Meteorológicos de Málaga"
+author: "Analista de Datos"
+date: today
+format:
+   html:
+    code-fold: true
+    toc: true
+    toc-location: left
+    toc-title: "Contenido"
+    number-sections: true
+    theme: cosmo
+    fig-width: 8
+    fig-height: 6
+    highlight-style: github
+    css: styles.css
+    code-block-border-left: "#31BAE9"
+    code-block-bg: "#f8f8f8"
+execute:
+  warning: false
+  error: false
+bibliography: references.bib
+---
+
+# Introducción
+
+Este informe analiza un incidente de ciberseguridad relacionado con altas temperaturas en un centro tecnológico de Málaga. El caso destaca la crítica relación entre las condiciones climáticas y la seguridad informática, específicamente en zonas con características climáticas particulares.
+
+## Antecedentes
+
+Se reportó un incidente significativo de ciberseguridad en una empresa tecnológica de la región de Málaga. Los problemas comenzaron cuando, debido a las altas temperaturas, se tomaron medidas inadecuadas de gestión térmica que comprometieron la seguridad de los sistemas:
+
+- Apagado nocturno de servidores para reducir la temperatura matinal
+- Apertura de puertos y relajación de protocolos de seguridad para reducir carga computacional
+- Múltiples ataques detectados por la centralita de seguridad informática como consecuencia
+
+# Metodología y Desarrollo del Análisis
+
+El análisis se desarrolló en tres fases principales, cada una implementada en un script específico:
+
+## Fase 1: Recolección de Datos (informe.py)
+
+Se desarrolló un script específico para la recolección automatizada de datos climatológicos:
+
+```python
+def obtener_datos(fecha_inicio, fecha_final):
+    URL_BASE = "https://opendata.aemet.es/opendata/api/valores/climatologicos/diarios/datos"
+    # Configuración de la API
+    api_key = os.getenv('API_KEY')
+    
+    # Proceso de recolección por intervalos de 15 días
+    datos_acumulados = []
+    fecha_actual = fecha_inicio
+    while fecha_actual <= fecha_final:
+        # Obtención y acumulación de datos
+        datos = obtener_datos(fecha_inicio_str, fecha_fin_str)
+        if datos:
+            datos_acumulados.extend(datos)
+```
+
+Características principales:
+- Uso de variables de entorno para seguridad de la API key
+- Recolección por intervalos de 15 días para manejar limitaciones de la API
+- Acumulación de datos en un único dataset
+
+## Fase 2: Análisis de Málaga (malaga.py)
+
+Se implementó un análisis específico para la provincia de Málaga:
+
+```python
+def limpiar_valor_numerico(valor):
+    """
+    Función crítica para el manejo de casos especiales en los datos
+    """
+    if pd.isna(valor) or valor == '' or valor == 'Varias':
+        return None
+    elif valor == 'Ip':  # Ip significa "inapreciable" en precipitación
+        return 0.0
+    else:
+        try:
+            return float(str(valor).replace(',', '.'))
+        except ValueError:
+            return None
+
+def procesar_datos_malaga(archivo_csv):
+    # Procesamiento específico para Málaga
+    columnas_numericas = ['tmed', 'prec', 'tmin', 'tmax', 'velmedia', 
+                         'racha', 'presMax', 'presMin']
+```
+
+Aspectos clave del procesamiento:
+- Limpieza especializada de datos meteorológicos
+- Manejo de casos especiales como 'Ip' (precipitación inapreciable)
+- Generación de visualizaciones temporales
+- Análisis estadístico por estación
+
+### Visualizaciones Generadas
+
+Se crearon dos visualizaciones principales para el análisis temporal:
+
+![Temperatura Media por Estación](temperaturas_malaga.png)
+
+Esta gráfica muestra la evolución temporal de las temperaturas, permitiendo identificar patrones y anomalías por estación.
+
+## Fase 3: Análisis de Ubicación (noticia.py)
+
+Se desarrolló un análisis específico para identificar la posible ubicación del incidente:
+
+```python
+def analizar_candidatos_parque_tecnologico(archivo_csv):
+    # Cálculo de métricas por estación
+    estaciones_stats = df_malaga.groupby('nombre').agg({
+        'tmed': ['mean', 'max'],
+        'prec': 'sum',
+        'altitud': 'first'
+    })
+    
+    # Normalización y cálculo de scores
+    estaciones_stats['temp_score'] = (normalización)
+    estaciones_stats['prec_score'] = (normalización)
+    estaciones_stats['alt_score'] = (normalización)
+```
+
+### Sistema de Puntuación
+
+Se implementó un sistema ponderado de evaluación:
+- Temperatura (40%): Mayor peso debido a su impacto directo en equipos
+- Precipitaciones (30%): Indicador de clima seco
+- Altitud (30%): Factor geográfico relevante
+
+### Mapa de Calor Resultante
+
+![Análisis de Riesgo por Estación](graph/analisis_riesgo_estaciones.png)
+
+El mapa de calor muestra claramente la correlación de factores por estación, destacando Antequera con:
+- Score de temperatura: 1.00
+- Score de precipitaciones: 0.93
+- Score de altitud: 0.32
+
+# Resultados y Discusión
+
+## Identificación de la Ubicación
+
+El análisis señala a Antequera como la ubicación más probable del incidente:
+
+1. Máxima puntuación en temperatura (1.00)
+   - Crítico para problemas de refrigeración
+   - Consistente con los problemas reportados
+
+2. Alta puntuación en precipitaciones bajas (0.93)
+   - Indica clima seco
+   - Afecta a la eficiencia de refrigeración
+
+3. Score de altitud (0.32)
+   - Inicialmente parece contradictorio
+   - La investigación en Google Maps revela que el centro tecnológico está en una zona de baja altitud dentro del municipio
+
+## Validación Externa
+
+La ubicación coincide con noticias recientes sobre el interés en Antequera para centros de datos [@laopinionmalaga2024], lo que refuerza la conclusión del análisis.
+
+## Caso Alternativo: Torrox
+
+- Aparece como candidato en los datos
+- Falta de datos completos de temperatura
+- No se puede realizar una comparación definitiva
+
+# Conclusiones
+
+1. Identificación de Ubicación:
+   - Antequera emerge como la ubicación más probable
+   - Los datos climáticos coinciden con el perfil reportado
+   - La zona específica del centro tecnológico cumple con todos los criterios
+
+2. Recomendaciones Técnicas:
+   - Implementar sistemas de refrigeración redundantes
+   - Mantener protocolos de seguridad independientemente de condiciones climáticas
+   - Considerar reubicación de servidores críticos
+
+3. Lecciones Aprendidas:
+   - Importancia de la planificación climática en infraestructura IT
+   - No comprometer seguridad por problemas de rendimiento
+   - Necesidad de protocolos específicos para condiciones climáticas extremas
+
+# Referencias
+
+::: {#refs}
+:::
+
+[@laopinionmalaga2024]: La Opinión de Málaga. (2024, March 10). Málaga y Antequera despiertan el interés de la industria de centros de datos.
