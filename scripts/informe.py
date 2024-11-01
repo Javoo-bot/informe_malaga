@@ -1,22 +1,45 @@
+import os
 import requests
 import pandas as pd
-import os
-from dotenv import load_dotenv
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
 
-# Cargar las variables del archivo .env (asegúrate de tener la variable API_KEY en tu .env)
-load_dotenv()
-api_key = os.getenv('API_KEY')
 
-# Verificar que la API_KEY esté presente
-if not api_key:
-    print("Error: La API_KEY no se encuentra definida. Asegúrate de que esté en el archivo .env")
-    exit()
+def cargar_api_key():
+    """
+    Carga y verifica la API key desde las variables de entorno.
+    
+    Returns:
+        str: API key de AEMET
+    
+    Raises:
+        SystemExit: Si no se encuentra la API key
+    """
+    load_dotenv()
+    api_key = os.getenv('API_KEY')
+    
+    if not api_key:
+        print("Error: La API_KEY no se encuentra definida. Asegúrate de que esté en el archivo .env")
+        exit()
+    
+    return api_key
 
-# Función para obtener los datos de un rango de fechas
-def obtener_datos(fecha_inicio, fecha_final):
-    URL_BASE = "https://opendata.aemet.es/opendata/api/valores/climatologicos/diarios/datos/fechaini/{fechaIniStr}/fechafin/{fechaFinStr}/todasestaciones"
-    url = URL_BASE.format(fechaIniStr=fecha_inicio, fechaFinStr=fecha_final) + f"?api_key={api_key}"
+
+def obtener_datos(fecha_inicio, fecha_final, api_key):
+    """
+    Obtiene datos climatológicos para un rango de fechas específico.
+    
+    Args:
+        fecha_inicio (str): Fecha inicial en formato ISO
+        fecha_final (str): Fecha final en formato ISO
+        api_key (str): API key de AEMET
+    
+    Returns:
+        list: Datos climatológicos si la petición es exitosa, None en caso contrario
+    """
+    URL_BASE = "https://opendata.aemet.es/opendata/api/valores/climatologicos/diarios/datos"
+    url = f"{URL_BASE}/fechaini/{fecha_inicio}/fechafin/{fecha_final}/todasestaciones?api_key={api_key}"
+    
     try:
         response = requests.get(url)
         if response.status_code == 200:
@@ -28,49 +51,104 @@ def obtener_datos(fecha_inicio, fecha_final):
                     return response_data.json()
                 else:
                     print(f"Error al obtener los datos de {fecha_inicio} a {fecha_final}: {response_data.status_code}")
-                    return None
         else:
             print(f"Error al acceder a la API: {response.status_code}")
-            return None
     except requests.exceptions.RequestException as e:
         print(f"Error en la conexión a la API: {e}")
-        return None
+    
+    return None
 
-# Definir el año para el cual queremos obtener los datos
-año = 2024
-fecha_inicio = datetime(año, 1, 1)
-fecha_final = datetime(año, 12, 31)
 
-# Lista para acumular datos de cada intervalo de 15 días
-datos_acumulados = []
+def obtener_rango_fechas(año):
+    """
+    Calcula el rango de fechas para el año especificado.
+    
+    Args:
+        año (int): Año para el cual se quieren obtener los datos
+    
+    Returns:
+        tuple: Fecha inicial y final como objetos datetime
+    """
+    return datetime(año, 1, 1), datetime(año, 12, 31)
 
-# Iterar cada 15 días dentro del rango del año
-delta_dias = timedelta(days=15)
-fecha_actual = fecha_inicio
 
-while fecha_actual <= fecha_final:
-    # Calcular la fecha de final del intervalo de 15 días
-    fecha_intervalo_fin = fecha_actual + delta_dias
-    # Ajustar la fecha de final para que no sobrepase el final del año
-    if fecha_intervalo_fin > fecha_final:
-        fecha_intervalo_fin = fecha_final
+def formatear_fecha(fecha):
+    """
+    Formatea una fecha al formato requerido por la API.
+    
+    Args:
+        fecha (datetime): Fecha a formatear
+    
+    Returns:
+        str: Fecha formateada en formato ISO
+    """
+    return fecha.strftime("%Y-%m-%dT%H:%M:%SUTC")
 
-    # Formatear las fechas como se requiere por la API (formato ISO)
-    fecha_inicio_str = fecha_actual.strftime("%Y-%m-%dT%H:%M:%SUTC")
-    fecha_fin_str = fecha_intervalo_fin.strftime("%Y-%m-%dT%H:%M:%SUTC")
 
-    print(f"Obteniendo datos de {fecha_inicio_str} a {fecha_fin_str}...")
-    datos = obtener_datos(fecha_inicio_str, fecha_fin_str)
-    if datos:
-        datos_acumulados.extend(datos)
+def recolectar_datos(fecha_inicio, fecha_final, api_key):
+    """
+    Recolecta datos para un rango de fechas en intervalos de 15 días.
+    
+    Args:
+        fecha_inicio (datetime): Fecha inicial
+        fecha_final (datetime): Fecha final
+        api_key (str): API key de AEMET
+    
+    Returns:
+        list: Lista de datos climatológicos acumulados
+    """
+    datos_acumulados = []
+    fecha_actual = fecha_inicio
+    delta_dias = timedelta(days=15)
+    
+    while fecha_actual <= fecha_final:
+        fecha_intervalo_fin = min(fecha_actual + delta_dias, fecha_final)
+        
+        fecha_inicio_str = formatear_fecha(fecha_actual)
+        fecha_fin_str = formatear_fecha(fecha_intervalo_fin)
+        
+        print(f"Obteniendo datos de {fecha_inicio_str} a {fecha_fin_str}...")
+        datos = obtener_datos(fecha_inicio_str, fecha_fin_str, api_key)
+        
+        if datos:
+            datos_acumulados.extend(datos)
+        
+        fecha_actual = fecha_intervalo_fin + timedelta(days=1)
+    
+    return datos_acumulados
 
-    # Avanzar al próximo intervalo de 15 días
-    fecha_actual = fecha_intervalo_fin + timedelta(days=1)
 
-# Crear un DataFrame con los datos acumulados
-if datos_acumulados:
-    df = pd.DataFrame(datos_acumulados)
-    df.to_csv('datos_climatologicos_anuales.csv', index=False)
-    print("Datos de todo el año guardados en 'datos_climatologicos_anuales.csv'")
-else:
-    print("No se obtuvieron datos para el año completo.")
+def guardar_datos(datos_acumulados, nombre_archivo='datos_climatologicos_anuales.csv'):
+    """
+    Guarda los datos recolectados en un archivo CSV.
+    
+    Args:
+        datos_acumulados (list): Lista de datos a guardar
+        nombre_archivo (str): Nombre del archivo CSV de salida
+    """
+    if datos_acumulados:
+        df = pd.DataFrame(datos_acumulados)
+        df.to_csv(nombre_archivo, index=False)
+        print(f"Datos guardados en '{nombre_archivo}'")
+    else:
+        print("No se obtuvieron datos para el año completo.")
+
+
+def main():
+    """Función principal que ejecuta el proceso de recolección de datos."""
+    # Configuración inicial
+    AÑO = 2024
+    api_key = cargar_api_key()
+    
+    # Obtener rango de fechas
+    fecha_inicio, fecha_final = obtener_rango_fechas(AÑO)
+    
+    # Recolectar datos
+    datos_acumulados = recolectar_datos(fecha_inicio, fecha_final, api_key)
+    
+    # Guardar resultados
+    guardar_datos(datos_acumulados)
+
+
+if __name__ == "__main__":
+    main()

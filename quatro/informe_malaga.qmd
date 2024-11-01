@@ -22,7 +22,41 @@ execute:
 bibliography: references.bib
 ---
 
+# Resumen Ejecutivo
+
+En agosto de 2024, una empresa tecnológica en la provincia de Málaga sufrió una brecha de seguridad significativa, originada por decisiones operativas tomadas en respuesta a condiciones climáticas extremas. Este incidente sirve como caso de estudio para analizar la crítica intersección entre factores climáticos y seguridad informática en la región.
+
 # Introducción
+
+## El Incidente: Cuando el Clima Compromete la Seguridad
+
+Durante una ola de calor particularmente intensa en Málaga, una empresa tecnológica experimentó lo que inicialmente parecía ser un problema de gestión de temperatura en sus instalaciones. Sin embargo, las medidas tomadas para abordar este desafío climático desencadenaron una serie de vulnerabilidades de seguridad con consecuencias significativas.
+
+### Cronología del Incidente
+
+1. **Fase Inicial (Día 1-3)**
+   - Temperaturas extremas detectadas en la sala de servidores
+   - Personal de mantenimiento reporta dificultades con el sistema de refrigeración
+   - Primeras medidas improvisadas de gestión térmica
+
+2. **Desarrollo de la Crisis (Día 4-7)**
+   - Implementación de "soluciones" improvisadas:
+     - Apagado nocturno de servidores no críticos
+     - Reducción de la carga computacional mediante relajación de protocolos
+     - Apertura de puertos para "mejorar la ventilación del sistema"
+
+3. **Consecuencias (Día 8-10)**
+   - Detección de múltiples intentos de intrusión
+   - Compromiso de varios sistemas secundarios
+   - Activación del protocolo de emergencia de seguridad
+
+### Impacto Documentado
+
+Las consecuencias del incidente incluyeron:
+- Pérdida temporal de servicios críticos
+- Exposición potencial de datos sensibles
+- Costos significativos en medidas de mitigación
+- Daño reputacional# Introducción
 
 Este informe analiza un incidente de ciberseguridad relacionado con altas temperaturas en un centro tecnológico de Málaga. El caso destaca la crítica relación entre las condiciones climáticas y la seguridad informática, específicamente en zonas con características climáticas particulares.
 
@@ -65,7 +99,99 @@ Características principales:
 
 ## Fase 2: Análisis de Málaga (malaga.py)
 
-Se implementó un análisis específico para la provincia de Málaga:
+
+```python
+def limpiar_valor_numerico(valor):
+    """
+    Función crítica para la limpieza de datos meteorológicos.
+    """
+    if pd.isna(valor) or valor == '' or valor == 'Varias':
+        return None
+    elif valor == 'Ip':  # Ip significa "inapreciable" en precipitación
+        return 0.0
+    else:
+        try:
+            return float(str(valor).replace(',', '.'))
+        except ValueError:
+            return None
+```
+
+Este proceso de limpieza fue fundamental por varias razones:
+1. **Manejo de Valores Especiales**: La API de AEMET utiliza códigos específicos como 'Ip' para precipitación inapreciable
+2. **Estandarización Numérica**: Conversión de separadores decimales de coma a punto
+3. **Gestión de Nulos**: Tratamiento uniforme de diferentes tipos de valores faltantes
+
+### 1.2 Transformaciones de Datos
+
+```python
+columnas_numericas = ['tmed', 'prec', 'tmin', 'tmax', 'altitud']
+for columna in columnas_numericas:
+    df_malaga[columna] = df_malaga[columna].apply(limpiar_valor_numerico)
+```
+
+Las transformaciones se aplicaron para:
+- Asegurar consistencia en tipos de datos
+- Facilitar análisis estadísticos posteriores
+- Permitir comparaciones válidas entre estaciones
+
+### 1.3 Análisis Estadístico
+
+```python
+estaciones_stats = df_malaga.groupby('nombre').agg({
+    'tmed': ['mean', 'max'],
+    'prec': 'sum',
+    'altitud': 'first'
+}).round(2)
+```
+
+Justificación de métricas seleccionadas:
+- **Temperatura Media**: Indica condiciones generales de operación
+- **Temperatura Máxima**: Identifica picos críticos
+- **Precipitación Total**: Indicador de humedad ambiental
+- **Altitud**: Factor moderador de temperatura
+
+## 2. Sistema de Puntuación
+
+### 2.1 Normalización de Variables
+
+```python
+def calcular_scores(self):
+    """Normalización Min-Max para cada variable."""
+    for col, data in [
+        ('temp_score', 'temp_media'),
+        ('prec_score', 'precipitacion_total'),
+        ('alt_score', 'altitud')
+    ]:
+        max_val = self.estaciones_stats[data].max()
+        min_val = self.estaciones_stats[data].min()
+        
+        if col in ['prec_score', 'alt_score']:
+            # Inversión para factores donde menor es mejor
+            self.estaciones_stats[col] = 1 - (
+                (self.estaciones_stats[data] - min_val) / 
+                (max_val - min_val)
+            )
+```
+
+Justificación de la normalización:
+1. **Escala Común**: Permite comparar variables en diferentes unidades
+2. **Rango [0-1]**: Facilita la interpretación de resultados
+3. **Inversión de Escalas**: Adapta scores según el impacto deseado
+
+### 2.2 Ponderación de Factores
+
+```python
+riesgo_total = (
+    temp_score * 0.4 +    # 40% peso temperatura
+    prec_score * 0.3 +    # 30% peso precipitación
+    alt_score * 0.3       # 30% peso altitud
+)
+```
+
+Justificación de pesos:
+- **Temperatura (40%)**: Factor crítico para equipamiento IT
+- **Precipitación (30%)**: Impacto en sistemas de refrigeración
+- **Altitud (30%)**: Efecto moderador del climaSe implementó un análisis específico para la provincia de Málaga:
 
 ```python
 def limpiar_valor_numerico(valor):
@@ -100,7 +226,16 @@ Se crearon dos visualizaciones principales para el análisis temporal:
 
 ![Temperatura Media por Estación](temperaturas_malaga.png)
 
-Esta gráfica muestra la evolución temporal de las temperaturas, permitiendo identificar patrones y anomalías por estación.
+Aspectos destacables:
+1. **Patrón Estacional**: Clara variación verano-invierno
+2. **Picos Críticos**: Máximos superiores a 35°C en verano
+3. **Variabilidad**: Diferencias significativas entre estaciones
+4. **Tendencia**: Aumento progresivo hasta agosto
+
+Implicaciones técnicas:
+- Necesidad de sistemas de refrigeración robustos
+- Planificación para picos de temperatura
+- Consideración de ubicaciones con menor variabilidadEsta gráfica muestra la evolución temporal de las temperaturas, permitiendo identificar patrones y anomalías por estación.
 
 ## Fase 3: Análisis de Ubicación (noticia.py)
 
@@ -131,6 +266,21 @@ Se implementó un sistema ponderado de evaluación:
 ### Mapa de Calor Resultante
 
 ![Análisis de Riesgo por Estación](graph/analisis_riesgo_estaciones.png)
+
+Interpretación del heatmap:
+1. **Distribución de Scores**:
+   - Rojo oscuro: Condiciones más críticas
+   - Amarillo claro: Condiciones más favorables
+
+2. **Hallazgos Clave**:
+   - ANTEQUERA AYUNTAMIENTO: Score temperatura máximo (1.00)
+   - TORROX: Balance óptimo entre factores
+   - GAUCIN: Mejores condiciones térmicas
+
+3. **Clusters de Riesgo**:
+   - Zona costera: Mejor balance general
+   - Interior: Mayor variabilidad térmica
+   - Zonas elevadas: Ventaja en temperatura
 
 El mapa de calor muestra claramente la correlación de factores por estación, destacando Antequera con:
 - Score de temperatura: 1.00
