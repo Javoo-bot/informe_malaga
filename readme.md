@@ -17,7 +17,7 @@ Este proyecto contiene un análisis detallado sobre datos de Málaga, ¡con grá
 - Mucho ❤️ y creatividad
 
 ## 👩‍💻 Autor
-Hecho con 💖 por [Tu nombre]
+Hecho con 💖 por Javi
 
 ## 🎯 Objetivo
 Crear el informe más awesome sobre Málaga que jamás hayas visto 🎪
