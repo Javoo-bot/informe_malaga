@@ -168,7 +168,7 @@ def mostrar_estadisticas_basicas(df_malaga):
 
 def main():
     """Función principal que ejecuta el procesamiento y análisis de datos."""
-    archivo_csv = 'datos_climatologicos_anuales.csv'
+    archivo_csv = '../csv/datos_climatologicos_anuales.csv'
     
     try:
         # Inicializar y procesar datos

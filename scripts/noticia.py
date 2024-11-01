@@ -129,7 +129,7 @@ def main():
     """Función principal que ejecuta el análisis completo."""
     try:
         # Inicializar analizador
-        ruta_archivo = os.path.join('csv', 'datos_climatologicos_anuales.csv')
+        ruta_archivo = os.path.join('csv', 'datos_malaga.csv')
         analizador = AnalizadorParqueTecnologico(ruta_archivo)
         
         # Ejecutar análisis

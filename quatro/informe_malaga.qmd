@@ -1,6 +1,6 @@
 ---
 title: "Análisis de Datos Meteorológicos de Málaga"
-author: "Analista de Datos"
+author: "Javier Lobato"
 date: today
 format:
    html:
@@ -16,6 +16,8 @@ format:
     css: styles.css
     code-block-border-left: "#31BAE9"
     code-block-bg: "#f8f8f8"
+    mermaid:
+       theme: default
 execute:
   warning: false
   error: false
@@ -53,6 +55,7 @@ Durante una ola de calor particularmente intensa en Málaga, una empresa tecnol�
 ### Impacto Documentado
 
 Las consecuencias del incidente incluyeron:
+
 - Pérdida temporal de servicios críticos
 - Exposición potencial de datos sensibles
 - Costos significativos en medidas de mitigación
@@ -70,53 +73,77 @@ Se reportó un incidente significativo de ciberseguridad en una empresa tecnoló
 
 # Metodología y Desarrollo del Análisis
 
-El análisis se desarrolló en tres fases principales, cada una implementada en un script específico:
+El análisis se desarrolló en tres fases principales, cada una implementada en un script específico
+
+```{mermaid}
+flowchart TD
+    A[AEMET API] -->|informe.py| B[Datos Climatológicos]
+    B -->|malaga.py| C[Datos Málaga]
+    C -->|noticia.py| D[Análisis]
+    D --> E[Visualizaciones]
+```
 
 ## Fase 1: Recolección de Datos (informe.py)
 
 Se desarrolló un script específico para la recolección automatizada de datos climatológicos:
 
 ```python
-def obtener_datos(fecha_inicio, fecha_final):
+def obtener_datos(fecha_inicio, fecha_final, api_key):
+    """
+    Obtiene datos de AEMET por intervalos para evitar límites de API.
+    Puntos clave:
+    - Manejo de errores robusto
+    - Control de respuestas HTTP
+    - Procesamiento de JSON
+    """
     URL_BASE = "https://opendata.aemet.es/opendata/api/valores/climatologicos/diarios/datos"
-    # Configuración de la API
-    api_key = os.getenv('API_KEY')
+    url = f"{URL_BASE}/fechaini/{fecha_inicio}/fechafin/{fecha_final}/todasestaciones"
     
-    # Proceso de recolección por intervalos de 15 días
-    datos_acumulados = []
-    fecha_actual = fecha_inicio
-    while fecha_actual <= fecha_final:
-        # Obtención y acumulación de datos
-        datos = obtener_datos(fecha_inicio_str, fecha_fin_str)
-        if datos:
-            datos_acumulados.extend(datos)
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            datos_url = response.json().get('datos')
+            if datos_url:
+                return requests.get(datos_url).json()
+    except requests.exceptions.RequestException as e:
+        print(f"Error: {e}")
+    return None
 ```
 
 Características principales:
+
 - Uso de variables de entorno para seguridad de la API key
 - Recolección por intervalos de 15 días para manejar limitaciones de la API
 - Acumulación de datos en un único dataset
 
 ## Fase 2: Análisis de Málaga (malaga.py)
 
+El script `malaga.py` implementa el procesamiento mediante clases especializadas:
 
 ```python
-def limpiar_valor_numerico(valor):
+class DatosMeteorologicos:
     """
-    Función crítica para la limpieza de datos meteorológicos.
+    Limpieza y procesamiento base de datos meteorológicos.
+    Aspectos clave:
+    - Manejo de casos especiales (Ip = precipitación inapreciable)
+    - Conversión de tipos de datos
+    - Validación de valores
     """
-    if pd.isna(valor) or valor == '' or valor == 'Varias':
-        return None
-    elif valor == 'Ip':  # Ip significa "inapreciable" en precipitación
-        return 0.0
-    else:
-        try:
-            return float(str(valor).replace(',', '.'))
-        except ValueError:
+    @staticmethod
+    def limpiar_valor_numerico(valor):
+        if pd.isna(valor) or valor == '' or valor == 'Varias':
             return None
+        elif valor == 'Ip':
+            return 0.0
+        else:
+            try:
+                return float(str(valor).replace(',', '.'))
+            except ValueError:
+                return None
 ```
 
 Este proceso de limpieza fue fundamental por varias razones:
+
 1. **Manejo de Valores Especiales**: La API de AEMET utiliza códigos específicos como 'Ip' para precipitación inapreciable
 2. **Estandarización Numérica**: Conversión de separadores decimales de coma a punto
 3. **Gestión de Nulos**: Tratamiento uniforme de diferentes tipos de valores faltantes
@@ -130,6 +157,7 @@ for columna in columnas_numericas:
 ```
 
 Las transformaciones se aplicaron para:
+
 - Asegurar consistencia en tipos de datos
 - Facilitar análisis estadísticos posteriores
 - Permitir comparaciones válidas entre estaciones
@@ -145,6 +173,7 @@ estaciones_stats = df_malaga.groupby('nombre').agg({
 ```
 
 Justificación de métricas seleccionadas:
+
 - **Temperatura Media**: Indica condiciones generales de operación
 - **Temperatura Máxima**: Identifica picos críticos
 - **Precipitación Total**: Indicador de humedad ambiental
@@ -174,6 +203,7 @@ def calcular_scores(self):
 ```
 
 Justificación de la normalización:
+
 1. **Escala Común**: Permite comparar variables en diferentes unidades
 2. **Rango [0-1]**: Facilita la interpretación de resultados
 3. **Inversión de Escalas**: Adapta scores según el impacto deseado
@@ -189,6 +219,7 @@ riesgo_total = (
 ```
 
 Justificación de pesos:
+
 - **Temperatura (40%)**: Factor crítico para equipamiento IT
 - **Precipitación (30%)**: Impacto en sistemas de refrigeración
 - **Altitud (30%)**: Efecto moderador del climaSe implementó un análisis específico para la provincia de Málaga:
@@ -227,12 +258,14 @@ Se crearon dos visualizaciones principales para el análisis temporal:
 ![Temperatura Media por Estación](temperaturas_malaga.png)
 
 Aspectos destacables:
+
 1. **Patrón Estacional**: Clara variación verano-invierno
 2. **Picos Críticos**: Máximos superiores a 35°C en verano
 3. **Variabilidad**: Diferencias significativas entre estaciones
 4. **Tendencia**: Aumento progresivo hasta agosto
 
 Implicaciones técnicas:
+
 - Necesidad de sistemas de refrigeración robustos
 - Planificación para picos de temperatura
 - Consideración de ubicaciones con menor variabilidadEsta gráfica muestra la evolución temporal de las temperaturas, permitiendo identificar patrones y anomalías por estación.
@@ -268,21 +301,26 @@ Se implementó un sistema ponderado de evaluación:
 ![Análisis de Riesgo por Estación](graph/analisis_riesgo_estaciones.png)
 
 Interpretación del heatmap:
+
 1. **Distribución de Scores**:
+
    - Rojo oscuro: Condiciones más críticas
    - Amarillo claro: Condiciones más favorables
 
 2. **Hallazgos Clave**:
+
    - ANTEQUERA AYUNTAMIENTO: Score temperatura máximo (1.00)
    - TORROX: Balance óptimo entre factores
    - GAUCIN: Mejores condiciones térmicas
 
 3. **Clusters de Riesgo**:
+
    - Zona costera: Mejor balance general
    - Interior: Mayor variabilidad térmica
    - Zonas elevadas: Ventaja en temperatura
 
 El mapa de calor muestra claramente la correlación de factores por estación, destacando Antequera con:
+
 - Score de temperatura: 1.00
 - Score de precipitaciones: 0.93
 - Score de altitud: 0.32
@@ -318,16 +356,19 @@ La ubicación coincide con noticias recientes sobre el interés en Antequera par
 # Conclusiones
 
 1. Identificación de Ubicación:
+
    - Antequera emerge como la ubicación más probable
    - Los datos climáticos coinciden con el perfil reportado
    - La zona específica del centro tecnológico cumple con todos los criterios
 
 2. Recomendaciones Técnicas:
+
    - Implementar sistemas de refrigeración redundantes
    - Mantener protocolos de seguridad independientemente de condiciones climáticas
    - Considerar reubicación de servidores críticos
 
 3. Lecciones Aprendidas:
+
    - Importancia de la planificación climática en infraestructura IT
    - No comprometer seguridad por problemas de rendimiento
    - Necesidad de protocolos específicos para condiciones climáticas extremas
@@ -338,3 +379,5 @@ La ubicación coincide con noticias recientes sobre el interés en Antequera par
 :::
 
 [@laopinionmalaga2024]: La Opinión de Málaga. (2024, March 10). Málaga y Antequera despiertan el interés de la industria de centros de datos.
+
+

@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Analista de Datos">
+<meta name="Javier Lobato" content="Javier Lobato">
 <meta name="dcterms.date" content="2024-11-01">
 
 <title>Análisis de Datos Meteorológicos de Málaga</title>
@@ -89,6 +89,10 @@ div.csl-indent {
 <script src="informe_malaga_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="informe_malaga_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="informe_malaga_files/libs/bootstrap/bootstrap-cb385f483a2d7ee2a292bc1ca58e4ec5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<meta name="mermaid-theme" content="default">
+<script src="informe_malaga_files/libs/quarto-diagram/mermaid.min.js"></script>
+<script src="informe_malaga_files/libs/quarto-diagram/mermaid-init.js"></script>
+<link href="informe_malaga_files/libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
 <link rel="stylesheet" href="styles.css">
@@ -159,7 +163,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>Analista de Datos </p>
+             <p>Javier Lobato </p>
           </div>
   </div>
     
@@ -215,7 +219,13 @@ div.csl-indent {
 </section>
 <section id="impacto-documentado" class="level3" data-number="2.1.2">
 <h3 data-number="2.1.2" class="anchored" data-anchor-id="impacto-documentado"><span class="header-section-number">2.1.2</span> Impacto Documentado</h3>
-<p>Las consecuencias del incidente incluyeron: - Pérdida temporal de servicios críticos - Exposición potencial de datos sensibles - Costos significativos en medidas de mitigación - Daño reputacional# Introducción</p>
+<p>Las consecuencias del incidente incluyeron:</p>
+<ul>
+<li>Pérdida temporal de servicios críticos</li>
+<li>Exposición potencial de datos sensibles</li>
+<li>Costos significativos en medidas de mitigación</li>
+<li>Daño reputacional# Introducción</li>
+</ul>
 <p>Este informe analiza un incidente de ciberseguridad relacionado con altas temperaturas en un centro tecnológico de Málaga. El caso destaca la crítica relación entre las condiciones climáticas y la seguridad informática, específicamente en zonas con características climáticas particulares.</p>
 </section>
 </section>
@@ -231,47 +241,92 @@ div.csl-indent {
 </section>
 <section id="metodología-y-desarrollo-del-análisis" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> Metodología y Desarrollo del Análisis</h1>
-<p>El análisis se desarrolló en tres fases principales, cada una implementada en un script específico:</p>
+<p>El análisis se desarrolló en tres fases principales, cada una implementada en un script específico</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    A[AEMET API] --&gt;|informe.py| B[Datos Climatológicos]
+    B --&gt;|malaga.py| C[Datos Málaga]
+    C --&gt;|noticia.py| D[Análisis]
+    D --&gt; E[Visualizaciones]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
 <section id="fase-1-recolección-de-datos-informe.py" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="fase-1-recolección-de-datos-informe.py"><span class="header-section-number">3.1</span> Fase 1: Recolección de Datos (informe.py)</h2>
 <p>Se desarrolló un script específico para la recolección automatizada de datos climatológicos:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> obtener_datos(fecha_inicio, fecha_final):</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    URL_BASE <span class="op">=</span> <span class="st">"https://opendata.aemet.es/opendata/api/valores/climatologicos/diarios/datos"</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Configuración de la API</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    api_key <span class="op">=</span> os.getenv(<span class="st">'API_KEY'</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Proceso de recolección por intervalos de 15 días</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    datos_acumulados <span class="op">=</span> []</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    fecha_actual <span class="op">=</span> fecha_inicio</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> fecha_actual <span class="op">&lt;=</span> fecha_final:</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Obtención y acumulación de datos</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        datos <span class="op">=</span> obtener_datos(fecha_inicio_str, fecha_fin_str)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> datos:</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>            datos_acumulados.extend(datos)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Características principales: - Uso de variables de entorno para seguridad de la API key - Recolección por intervalos de 15 días para manejar limitaciones de la API - Acumulación de datos en un único dataset</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> obtener_datos(fecha_inicio, fecha_final, api_key):</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Obtiene datos de AEMET por intervalos para evitar límites de API.</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Puntos clave:</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">    - Manejo de errores robusto</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">    - Control de respuestas HTTP</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">    - Procesamiento de JSON</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    URL_BASE <span class="op">=</span> <span class="st">"https://opendata.aemet.es/opendata/api/valores/climatologicos/diarios/datos"</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    url <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>URL_BASE<span class="sc">}</span><span class="ss">/fechaini/</span><span class="sc">{</span>fecha_inicio<span class="sc">}</span><span class="ss">/fechafin/</span><span class="sc">{</span>fecha_final<span class="sc">}</span><span class="ss">/todasestaciones"</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        response <span class="op">=</span> requests.get(url)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> response.status_code <span class="op">==</span> <span class="dv">200</span>:</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>            datos_url <span class="op">=</span> response.json().get(<span class="st">'datos'</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> datos_url:</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span> requests.get(datos_url).json()</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> requests.exceptions.RequestException <span class="im">as</span> e:</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Error: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">None</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Características principales:</p>
+<ul>
+<li>Uso de variables de entorno para seguridad de la API key</li>
+<li>Recolección por intervalos de 15 días para manejar limitaciones de la API</li>
+<li>Acumulación de datos en un único dataset</li>
+</ul>
 </section>
 <section id="fase-2-análisis-de-málaga-malaga.py" class="level2" data-number="3.2">
 <h2 data-number="3.2" class="anchored" data-anchor-id="fase-2-análisis-de-málaga-malaga.py"><span class="header-section-number">3.2</span> Fase 2: Análisis de Málaga (malaga.py)</h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> limpiar_valor_numerico(valor):</span>
+<p>El script <code>malaga.py</code> implementa el procesamiento mediante clases especializadas:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> DatosMeteorologicos:</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Función crítica para la limpieza de datos meteorológicos.</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> pd.isna(valor) <span class="kw">or</span> valor <span class="op">==</span> <span class="st">''</span> <span class="kw">or</span> valor <span class="op">==</span> <span class="st">'Varias'</span>:</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">None</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> valor <span class="op">==</span> <span class="st">'Ip'</span>:  <span class="co"># Ip significa "inapreciable" en precipitación</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fl">0.0</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span>:</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="bu">float</span>(<span class="bu">str</span>(valor).replace(<span class="st">','</span>, <span class="st">'.'</span>))</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">except</span> <span class="pp">ValueError</span>:</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">None</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Este proceso de limpieza fue fundamental por varias razones: 1. <strong>Manejo de Valores Especiales</strong>: La API de AEMET utiliza códigos específicos como ‘Ip’ para precipitación inapreciable 2. <strong>Estandarización Numérica</strong>: Conversión de separadores decimales de coma a punto 3. <strong>Gestión de Nulos</strong>: Tratamiento uniforme de diferentes tipos de valores faltantes</p>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Limpieza y procesamiento base de datos meteorológicos.</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Aspectos clave:</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">    - Manejo de casos especiales (Ip = precipitación inapreciable)</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">    - Conversión de tipos de datos</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">    - Validación de valores</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">@staticmethod</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> limpiar_valor_numerico(valor):</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> pd.isna(valor) <span class="kw">or</span> valor <span class="op">==</span> <span class="st">''</span> <span class="kw">or</span> valor <span class="op">==</span> <span class="st">'Varias'</span>:</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">None</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> valor <span class="op">==</span> <span class="st">'Ip'</span>:</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="fl">0.0</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>            <span class="cf">try</span>:</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span> <span class="bu">float</span>(<span class="bu">str</span>(valor).replace(<span class="st">','</span>, <span class="st">'.'</span>))</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>            <span class="cf">except</span> <span class="pp">ValueError</span>:</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span> <span class="va">None</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Este proceso de limpieza fue fundamental por varias razones:</p>
+<ol type="1">
+<li><strong>Manejo de Valores Especiales</strong>: La API de AEMET utiliza códigos específicos como ‘Ip’ para precipitación inapreciable</li>
+<li><strong>Estandarización Numérica</strong>: Conversión de separadores decimales de coma a punto</li>
+<li><strong>Gestión de Nulos</strong>: Tratamiento uniforme de diferentes tipos de valores faltantes</li>
+</ol>
 <section id="transformaciones-de-datos" class="level3" data-number="3.2.1">
 <h3 data-number="3.2.1" class="anchored" data-anchor-id="transformaciones-de-datos"><span class="header-section-number">3.2.1</span> 1.2 Transformaciones de Datos</h3>
 <div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>columnas_numericas <span class="op">=</span> [<span class="st">'tmed'</span>, <span class="st">'prec'</span>, <span class="st">'tmin'</span>, <span class="st">'tmax'</span>, <span class="st">'altitud'</span>]</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> columna <span class="kw">in</span> columnas_numericas:</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    df_malaga[columna] <span class="op">=</span> df_malaga[columna].<span class="bu">apply</span>(limpiar_valor_numerico)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Las transformaciones se aplicaron para: - Asegurar consistencia en tipos de datos - Facilitar análisis estadísticos posteriores - Permitir comparaciones válidas entre estaciones</p>
+<p>Las transformaciones se aplicaron para:</p>
+<ul>
+<li>Asegurar consistencia en tipos de datos</li>
+<li>Facilitar análisis estadísticos posteriores</li>
+<li>Permitir comparaciones válidas entre estaciones</li>
+</ul>
 </section>
 <section id="análisis-estadístico" class="level3" data-number="3.2.2">
 <h3 data-number="3.2.2" class="anchored" data-anchor-id="análisis-estadístico"><span class="header-section-number">3.2.2</span> 1.3 Análisis Estadístico</h3>
@@ -280,7 +335,13 @@ div.csl-indent {
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'prec'</span>: <span class="st">'sum'</span>,</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'altitud'</span>: <span class="st">'first'</span></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>}).<span class="bu">round</span>(<span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Justificación de métricas seleccionadas: - <strong>Temperatura Media</strong>: Indica condiciones generales de operación - <strong>Temperatura Máxima</strong>: Identifica picos críticos - <strong>Precipitación Total</strong>: Indicador de humedad ambiental - <strong>Altitud</strong>: Factor moderador de temperatura</p>
+<p>Justificación de métricas seleccionadas:</p>
+<ul>
+<li><strong>Temperatura Media</strong>: Indica condiciones generales de operación</li>
+<li><strong>Temperatura Máxima</strong>: Identifica picos críticos</li>
+<li><strong>Precipitación Total</strong>: Indicador de humedad ambiental</li>
+<li><strong>Altitud</strong>: Factor moderador de temperatura</li>
+</ul>
 </section>
 </section>
 <section id="sistema-de-puntuación" class="level2" data-number="3.3">
@@ -303,7 +364,12 @@ div.csl-indent {
 <span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>                (<span class="va">self</span>.estaciones_stats[data] <span class="op">-</span> min_val) <span class="op">/</span> </span>
 <span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>                (max_val <span class="op">-</span> min_val)</span>
 <span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>            )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Justificación de la normalización: 1. <strong>Escala Común</strong>: Permite comparar variables en diferentes unidades 2. <strong>Rango [0-1]</strong>: Facilita la interpretación de resultados 3. <strong>Inversión de Escalas</strong>: Adapta scores según el impacto deseado</p>
+<p>Justificación de la normalización:</p>
+<ol type="1">
+<li><strong>Escala Común</strong>: Permite comparar variables en diferentes unidades</li>
+<li><strong>Rango [0-1]</strong>: Facilita la interpretación de resultados</li>
+<li><strong>Inversión de Escalas</strong>: Adapta scores según el impacto deseado</li>
+</ol>
 </section>
 <section id="ponderación-de-factores" class="level3" data-number="3.3.2">
 <h3 data-number="3.3.2" class="anchored" data-anchor-id="ponderación-de-factores"><span class="header-section-number">3.3.2</span> 2.2 Ponderación de Factores</h3>
@@ -312,7 +378,12 @@ div.csl-indent {
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    prec_score <span class="op">*</span> <span class="fl">0.3</span> <span class="op">+</span>    <span class="co"># 30% peso precipitación</span></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    alt_score <span class="op">*</span> <span class="fl">0.3</span>       <span class="co"># 30% peso altitud</span></span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Justificación de pesos: - <strong>Temperatura (40%)</strong>: Factor crítico para equipamiento IT - <strong>Precipitación (30%)</strong>: Impacto en sistemas de refrigeración - <strong>Altitud (30%)</strong>: Efecto moderador del climaSe implementó un análisis específico para la provincia de Málaga:</p>
+<p>Justificación de pesos:</p>
+<ul>
+<li><strong>Temperatura (40%)</strong>: Factor crítico para equipamiento IT</li>
+<li><strong>Precipitación (30%)</strong>: Impacto en sistemas de refrigeración</li>
+<li><strong>Altitud (30%)</strong>: Efecto moderador del climaSe implementó un análisis específico para la provincia de Málaga:</li>
+</ul>
 <div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> limpiar_valor_numerico(valor):</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Función crítica para el manejo de casos especiales en los datos</span></span>
@@ -342,8 +413,19 @@ div.csl-indent {
 <figcaption>Temperatura Media por Estación</figcaption>
 </figure>
 </div>
-<p>Aspectos destacables: 1. <strong>Patrón Estacional</strong>: Clara variación verano-invierno 2. <strong>Picos Críticos</strong>: Máximos superiores a 35°C en verano 3. <strong>Variabilidad</strong>: Diferencias significativas entre estaciones 4. <strong>Tendencia</strong>: Aumento progresivo hasta agosto</p>
-<p>Implicaciones técnicas: - Necesidad de sistemas de refrigeración robustos - Planificación para picos de temperatura - Consideración de ubicaciones con menor variabilidadEsta gráfica muestra la evolución temporal de las temperaturas, permitiendo identificar patrones y anomalías por estación.</p>
+<p>Aspectos destacables:</p>
+<ol type="1">
+<li><strong>Patrón Estacional</strong>: Clara variación verano-invierno</li>
+<li><strong>Picos Críticos</strong>: Máximos superiores a 35°C en verano</li>
+<li><strong>Variabilidad</strong>: Diferencias significativas entre estaciones</li>
+<li><strong>Tendencia</strong>: Aumento progresivo hasta agosto</li>
+</ol>
+<p>Implicaciones técnicas:</p>
+<ul>
+<li>Necesidad de sistemas de refrigeración robustos</li>
+<li>Planificación para picos de temperatura</li>
+<li>Consideración de ubicaciones con menor variabilidadEsta gráfica muestra la evolución temporal de las temperaturas, permitiendo identificar patrones y anomalías por estación.</li>
+</ul>
 </section>
 </section>
 <section id="fase-3-análisis-de-ubicación-noticia.py" class="level2" data-number="3.4">
@@ -373,22 +455,32 @@ div.csl-indent {
 <figcaption>Análisis de Riesgo por Estación</figcaption>
 </figure>
 </div>
-<p>Interpretación del heatmap: 1. <strong>Distribución de Scores</strong>: - Rojo oscuro: Condiciones más críticas - Amarillo claro: Condiciones más favorables</p>
-<ol start="2" type="1">
-<li><strong>Hallazgos Clave</strong>:
+<p>Interpretación del heatmap:</p>
+<ol type="1">
+<li><p><strong>Distribución de Scores</strong>:</p>
+<ul>
+<li>Rojo oscuro: Condiciones más críticas</li>
+<li>Amarillo claro: Condiciones más favorables</li>
+</ul></li>
+<li><p><strong>Hallazgos Clave</strong>:</p>
 <ul>
 <li>ANTEQUERA AYUNTAMIENTO: Score temperatura máximo (1.00)</li>
 <li>TORROX: Balance óptimo entre factores</li>
 <li>GAUCIN: Mejores condiciones térmicas</li>
 </ul></li>
-<li><strong>Clusters de Riesgo</strong>:
+<li><p><strong>Clusters de Riesgo</strong>:</p>
 <ul>
 <li>Zona costera: Mejor balance general</li>
 <li>Interior: Mayor variabilidad térmica</li>
 <li>Zonas elevadas: Ventaja en temperatura</li>
 </ul></li>
 </ol>
-<p>El mapa de calor muestra claramente la correlación de factores por estación, destacando Antequera con: - Score de temperatura: 1.00 - Score de precipitaciones: 0.93 - Score de altitud: 0.32</p>
+<p>El mapa de calor muestra claramente la correlación de factores por estación, destacando Antequera con:</p>
+<ul>
+<li>Score de temperatura: 1.00</li>
+<li>Score de precipitaciones: 0.93</li>
+<li>Score de altitud: 0.32</li>
+</ul>
 </section>
 </section>
 </section>
@@ -431,19 +523,19 @@ div.csl-indent {
 <section id="conclusiones" class="level1" data-number="5">
 <h1 data-number="5"><span class="header-section-number">5</span> Conclusiones</h1>
 <ol type="1">
-<li>Identificación de Ubicación:
+<li><p>Identificación de Ubicación:</p>
 <ul>
 <li>Antequera emerge como la ubicación más probable</li>
 <li>Los datos climáticos coinciden con el perfil reportado</li>
 <li>La zona específica del centro tecnológico cumple con todos los criterios</li>
 </ul></li>
-<li>Recomendaciones Técnicas:
+<li><p>Recomendaciones Técnicas:</p>
 <ul>
 <li>Implementar sistemas de refrigeración redundantes</li>
 <li>Mantener protocolos de seguridad independientemente de condiciones climáticas</li>
 <li>Considerar reubicación de servidores críticos</li>
 </ul></li>
-<li>Lecciones Aprendidas:
+<li><p>Lecciones Aprendidas:</p>
 <ul>
 <li>Importancia de la planificación climática en infraestructura IT</li>
 <li>No comprometer seguridad por problemas de rendimiento</li>
