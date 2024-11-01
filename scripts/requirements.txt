@@ -2,3 +2,7 @@ requests==2.32.3
 pandas==2.2.3
 python-dotenv==1.0.1
 matplotlib==3.9.2
+seaborn==0.13.2
+pydantic==2.6.3
+jupyter>=1.0.0
+nbformat>=5.9.2
