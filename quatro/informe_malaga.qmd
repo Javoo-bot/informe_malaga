@@ -4,6 +4,7 @@ author: "Javier Lobato"
 date: today
 format:
    html:
+    embed-resources: true
     code-fold: true
     toc: true
     toc-location: left
@@ -70,6 +71,10 @@ Una de las primeras comprobaciones a la hora de enfrentarnos a una base de datos
 presenta la información con la que queremos trabajar. Al ser una estacion meteorologica la comprobacion mas obvia es comprobar 
 si hay dias que faltan. 
 
+::: {#fig-ejemplo}
+![Número de días](dias.png)
+:::
+
 Entonces tenemos registros para todos los dias en Málaga, pero ¿hay localidades que esten menos representadas? Es decir, tenemos
 los datos de toda la provincia de MÁlaga pero vamos a comprobar que en promoedio tenemos datos representativos de 
 todas las ciudades. 
@@ -100,7 +105,13 @@ o humanos. Entonces queremos descartar datos de ciudades dnode se onserven anoma
 :::
 
 Se observa que la tendencia de las estaciones es de tomar datos la mayoria de los dias, salvo una estacion llamada "6100B"
-que corresponde a "Antequera Ayuntamiento". En un principio se barajo la posibilidad de que la falta de registros podria 
+que corresponde a "Antequera Ayuntamiento". 
+
+::: {#fig-ejemplo}
+![Estaciones meteorologicas](estacion.png)
+:::
+
+En un principio se barajo la posibilidad de que la falta de registros podria 
 ser porque el mes al terminar el dia 22 quizas habia hecho que los datos no se enviasen a tiempo. Pero una rapida 
 comprobacion mostro que el ultimo registro databa de "22-10-2024" entonces se descartó esta hipótesis. 
 
@@ -139,6 +150,10 @@ que filtra la radiación solar es más delgada y por lo tanto hay menos condensa
 por lo tanto hay que priorizar ciudades de baja altitud. En principio, las ciudades con menor altitud van a tener 
 mas probabilidad de experimentar temperaturas mas altas.  
 
+::: {#fig-ejemplo}
+![Altitud ciudades](altitud.png)
+:::
+
 El grafico muestra una clara tendencia donde las ciudades con menor altitud 
 (exceptuando la anomalia de Antequera Ayutamiento) tienen en promedio mayores temperaturas. 
 Nos fijamos en ciudades como Vélez, Álora, Coin o la propia Rincon.  
@@ -165,6 +180,11 @@ que tenga una altitud baja y ademas que tenga picos de temperatrua maxima. No ol
 es simplemente la diferencia de la variaciond e la temperatura a lo largo del año. 
 
 Al realizar el grafico vemos dos ciudades que llaman la atencion que son Torremolinos (49 m s. n. m) y Alora (172 m s. n. m.). 
+
+::: {#fig-ejemplo}
+![Temperatura media](temperatura_media.png)
+:::
+
 Tambien es llamativa "Malaga-Aeropuerto" pero dada la poca presencia de empresas en esa zona se descartó.
 
 Otra variable a tener en cuenta es la precipitacion y su influencia en rebajar las temperaturas. A pesar de que en 
@@ -175,6 +195,11 @@ el sur el agua es un recuerso excaso valia la pena investigar la influencia de e
 Hubo que realizar algunas modificaciones en la escala para poder representar todas las estimaciones en la misma grafica. 
 El valor llamtivo es Alpandeire que tiene casi 94 mm de precipitacion, pero las ciudades en las que nos habiamos
 fijado no presenten altas precipitaciones. 
+
+::: {#fig-ejemplo}
+![Precipitacion](lluvia.png)
+:::
+
 Entonces en su caso este no es un factor que pudiese ayudar a la bajada de temperaturas. 
 
 #### 3.4 Temperatura máxima
@@ -210,6 +235,10 @@ y la temperatura minima para evitar multicolinealidad.
 La matriz ayuda a identificar que variables independientes tienen mayor influencia en la temperatura y ver si 
 nuestras hipotesis tiene algo de verdad en los datos. 
 
+::: {#fig-ejemplo}
+![Relacion entre variables](matriz.png)
+:::
+
 Lo que podemos ver en la matriz de correlacion es que no es necesario incluir en las predicciones los dos tipos de 
 presiones porque tienen una correlacion muy alta entre si. En vez de usar las dos con un tipo de presion ya es suficiente. 
 Lo mismo ocurre con la humedad que podria simplificarse en una sola medida. En cambio la precipitacion y la direccion
@@ -241,6 +270,11 @@ período en diferentes años, lo que proporciona una base sólida para las estim
 :::
 La regresión lineal muestra un coeficiente de determinación sorprendentemente bajo (0.34), indicando que solo explica 
 el 34% de la varianza. 
+
+::: {#fig-ejemplo}
+![Regresion lineal](output.png)
+:::
+
 Esto sugiere que la relación entre las variables predictoras y la temperatura es más compleja de lo esperado, 
 posiblemente no lineal, o que existen factores importantes no capturados en el modelo actual.
 
@@ -253,6 +287,11 @@ posiblemente no lineal, o que existen factores importantes no capturados en el m
 :::
 El análisis de importancia de variables y el árbol de decisión revelan que la humedad relativa media (hrMedia) es 
 el indicador más influyente con un peso del 44%, seguido por la precipitación (20%) y la altitud (9%). 
+
+::: {#fig-ejemplo}
+![Importancia variables](variables.png)
+:::
+
 La humedad relativa tiene un impacto directo en la sensación térmica y la temperatura real, lo que explica su alta 
 importancia en el modelo. El árbol de decisión muestra claramente cómo valores de humedad relativa por encima de 54.5%
 están asociados con temperaturas medias más bajas (25.4°C), mientras que niveles más bajos de humedad se correlacionan
@@ -266,7 +305,13 @@ con temperaturas más altas.
    * Modelo subestima sistemáticamente temperaturas
    * Riesgo de infraestimación en gestión de calor laboral
 :::
-Lo más preocupante son las predicciones para Torremolinos y Álora. En ambas ciudades, el modelo subestima sistemáticamente
+Lo más preocupante son las predicciones para Torremolinos y Álora. 
+
+::: {#fig-ejemplo}
+![prediccion Torremolinos](torremolinos.png)
+:::
+
+En ambas ciudades, el modelo subestima sistemáticamente
 las temperaturas más altas (los puntos están por debajo de la línea diagonal roja). 
 Esto significa que las temperaturas reales podrían ser significativamente más elevadas que las predichas, 
 lo que aumenta el riesgo de subestimar situaciones potencialmente problemáticas en términos de gestión del calor en entornos laborales.
