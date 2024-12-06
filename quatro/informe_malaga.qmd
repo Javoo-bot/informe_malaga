@@ -28,14 +28,18 @@ bibliography: references.bib
 # Análisis de Riesgo Climático y Ciberseguridad en Málaga
 ## Informe de Investigación - 2024
 
-### 1. Contexto de la investigación
+### Contexto de la investigación
 
-#### 1.1 Origen de la investigacion
+#### Origen de la investigacion
 
 En verano de 2023 sale en un periodico local una fake news de que el aumento de las fugas de datos en ciertas empresas de Málaga
 podria ser debido a las altas temperaturas. 
 
-#### 1.2 Noticia sobre data leak
+::: {#fig-ejemplo}
+![Noticia](news.png)
+:::
+
+#### Noticia sobre data leak
 
 Segun la noticia engañosa, ciertos trabajadores debido a las altas temperaturas habrian apagado los servidores encargados de
 la protección de la empresa frente a conexiones IP fraudulentas. 
@@ -47,19 +51,19 @@ Este apagon provocó que durante varias horas ciertos atacantes pudieses acceder
 La noticia (aunque luego resultó ser una exageración por parte de las empresas de ciberseguridad para vender mas antivirus) 
 hizo que organismos publicos estudiasen la veracidaz de los hechos. 
 
-#### 1.3 Motivacion del estudio
+#### Motivacion del estudio
 
 Por eso este informe responde a la preocupación de organismos
 publicos y privados de cotejar si el proximo verano se podria producir el mismo problema. Los resultados de la investigacion 
 no han sido publicados debido a que 1 mes anres de su elaboracion se descubrio que la noticia era una "fake news".
 
-### 2. Proceso de Análisis
+### Proceso de Análisis
 
-#### 2.1 Fuente de informacion
+#### Fuente de informacion
 
 Los datos son extraidos desde la web de la AEMET y los registros estan en el rango entre 1 de enero y 22 de octubre de 2023.
 
-#### 2.2 Distribucion de Registros
+#### Distribucion de Registros
 
 ::: {.callout-note appearance="simple"}
 * Máximo: 24 estaciones meteorológicas por día
@@ -76,10 +80,10 @@ si hay dias que faltan.
 :::
 
 Entonces tenemos registros para todos los dias en Málaga, pero ¿hay localidades que esten menos representadas? Es decir, tenemos
-los datos de toda la provincia de MÁlaga pero vamos a comprobar que en promoedio tenemos datos representativos de 
+los datos de toda la provincia de MÁlaga pero vamos a comprobar que en promedio tenemos datos representativos de 
 todas las ciudades. 
 En caso de tener datos menores para algun ciudad en concreto esto nos avisa de que no nos podemos fiar ciegamente de los resultados
-para esa localidad. O al menos ser mas ciudadosos. 
+para esa localidad. O al menos ser mas cuidadosos. 
 
 Se realiza un histograma que muestra que si bien es cierto que hay meses donde los registros son mas escasos 
 (febrero, marzo y junio) esto no es muy preocupante porque los meses mas calurosos tienen registros bastantes altos. 
@@ -91,11 +95,11 @@ Una vez que sabemos que tenemos datos bastante representativos, vamos a analizar
 Aqui lo que queremos es comprobar una idea de que apareció una vez que se observaron los datos,
 ¿todas las estaciones estan funcionando? 
 
-Esta duda metodológica es plausible si tenemos en cuenta que las estacoines pueden fallar por culpa de problemas tecnicos
+Esta duda metodológica es plausible si tenemos en cuenta que las estaciones pueden fallar por culpa de problemas tecnicos
 o humanos. Entonces queremos descartar datos de ciudades dnode se onserven anomalias. Por ejemplo si una estacion aportase
 4 datos y todos de valor 35 esto podria distorsionar las predicciones. 
 
-#### 2.3 Problemas de registro
+#### Problemas de registro
 
 ::: {.callout-note appearance="simple"}
 * Estación problemática: 6100B (Antequera Ayuntamiento)
@@ -135,9 +139,9 @@ Solamente por curisoidad la mayor perdida de informacion se produjo en marzo con
 Hemos hablado de las variables: fecha y indicador de estacion, vamos a hablar ahora de la altitud, 
 temperatura media, precipitacion y temperatura maxima.
 
-### 3. Variables de análisis
+### Variables de análisis
 
-#### 3.1 Altitud
+#### Altitud
 
 ::: {.callout-note appearance="simple"}
 * Factor crucial en predicción de temperaturas
@@ -146,7 +150,7 @@ temperatura media, precipitacion y temperatura maxima.
 :::
 
 La altitud es un valor importante a la hora de predecir la temperatura porque a mayor altitud la capa de atmósfera 
-que filtra la radiación solar es más delgada y por lo tanto hay menos condensacino del calor en las zonas de mayor altura, 
+que filtra la radiación solar es más delgada y por lo tanto hay menos condensacion del calor en las zonas de mayor altura, 
 por lo tanto hay que priorizar ciudades de baja altitud. En principio, las ciudades con menor altitud van a tener 
 mas probabilidad de experimentar temperaturas mas altas.  
 
@@ -160,7 +164,7 @@ Nos fijamos en ciudades como Vélez, Álora, Coin o la propia Rincon.
 
 Es curioso que el otro sensor en Antequera que no es Antequera-Ayuntamiento ocupe los puestos de ciudades con menores temperaturas. 
 
-#### 3.2 Temperatura media
+#### Temperatura media
 
 ::: {.callout-note appearance="simple"}
 * No útil para predicciones
@@ -176,7 +180,7 @@ Un cuarto valor a considerar es la temperatura media pero no porque sea util par
 nos da una vision general del reparto de temperaturas a lo largo del tiempo de analisis. No tendria sentido 
 usar la temperatura media como variable para predecir la temperatura, pero si para tener una idea mas concreta de
 como se reparten las temperaturas. Es decir nos interesa una ciudad que tenga registros para la mayoria de dias, 
-que tenga una altitud baja y ademas que tenga picos de temperatrua maxima. No olvidemos que la temepratrua media
+que tenga una altitud baja y ademas que tenga picos de temperatura maxima. No olvidemos que la temepratrua media
 es simplemente la diferencia de la variaciond e la temperatura a lo largo del año. 
 
 Al realizar el grafico vemos dos ciudades que llaman la atencion que son Torremolinos (49 m s. n. m) y Alora (172 m s. n. m.). 
@@ -190,7 +194,7 @@ Tambien es llamativa "Malaga-Aeropuerto" pero dada la poca presencia de empresas
 Otra variable a tener en cuenta es la precipitacion y su influencia en rebajar las temperaturas. A pesar de que en 
 el sur el agua es un recuerso excaso valia la pena investigar la influencia de este factor. 
 
-#### 3.3 Precipitación
+#### Precipitación
 
 Hubo que realizar algunas modificaciones en la escala para poder representar todas las estimaciones en la misma grafica. 
 El valor llamtivo es Alpandeire que tiene casi 94 mm de precipitacion, pero las ciudades en las que nos habiamos
@@ -202,7 +206,7 @@ fijado no presenten altas precipitaciones.
 
 Entonces en su caso este no es un factor que pudiese ayudar a la bajada de temperaturas. 
 
-#### 3.4 Temperatura máxima
+#### Temperatura máxima
 
 ::: {.callout-note appearance="simple"}
 * Concentración de altas temperaturas: 8:00 a 18:00 horas
@@ -219,9 +223,9 @@ Esto es logico porque la temperatura suele ser maxima en la horas centrales.
 Hasta ahora hemos inferido las relaciones que tienen la variables "altitud y precipitacion" sobre la temperatura, 
 pero es preferible realizar una matriz de correlacion para ver la influencia de unas variables sobre otras. 
 
-### 4.Matriz de correlacion
+### Matriz de correlacion
 
-### 4.1 Hallazgos
+### Hallazgos
 
 ::: {.callout-note appearance="simple"}
 * Presiones: correlación muy alta, usar solo un tipo
@@ -244,8 +248,8 @@ presiones porque tienen una correlacion muy alta entre si. En vez de usar las do
 Lo mismo ocurre con la humedad que podria simplificarse en una sola medida. En cambio la precipitacion y la direccion
 del viento son muy relevantes porque aportan informacion unica al estar muy poco relacionadas con el resto de variables.
 
-### 5. Prediciones
-#### 5.1 Proceso de imputacion de datos
+### Prediciones
+#### Proceso de imputacion de datos
 
 ::: {.callout-note appearance="simple"}
 * Método: Imputación por media
@@ -258,7 +262,7 @@ El proceso de imputación de valores faltantes usando la media fue necesario y m
 la pérdida de registros de 6888 a 6145 filas. Esta decisión está respaldada por la disponibilidad de datos del mismo 
 período en diferentes años, lo que proporciona una base sólida para las estimaciones.
 
-#### 5.2 Modelo de regresión lineal
+#### Modelo de regresión lineal
 
 ::: {.callout-note appearance="simple"}
 * R² (coeficiente de determinación): 0.34
@@ -278,7 +282,7 @@ el 34% de la varianza.
 Esto sugiere que la relación entre las variables predictoras y la temperatura es más compleja de lo esperado, 
 posiblemente no lineal, o que existen factores importantes no capturados en el modelo actual.
 
-#### 5.3 Analisis importancia variables
+#### Analisis importancia variables
 
 ::: {.callout-note appearance="simple"}
 * Humedad relativa media (44%)
@@ -297,7 +301,7 @@ importancia en el modelo. El árbol de decisión muestra claramente cómo valore
 están asociados con temperaturas medias más bajas (25.4°C), mientras que niveles más bajos de humedad se correlacionan
 con temperaturas más altas.
 
-#### 5.4 Predicciones por ciudades
+#### Predicciones por ciudades
 
 ::: {.callout-note appearance="simple"}
 * Casos Críticos: Torremolinos y Álora
@@ -320,14 +324,14 @@ Este sesgo en la predicción, combinado con la importancia dominante de la humed
 deberíamos considerar modelos más sofisticados que puedan capturar mejor las interacciones no lineales entre variables,
 especialmente en condiciones de temperatura extrema.
 
-### 6. Conclusion
+### Conclusion
 
 El análisis demuestra que es normal preocuparse porque en los espacios de trabajo no haya temperatruas
 demasiado altas o bajas, especialmente en ciudades tan calurosas como Torremolinos y Álora. 
 Segun nuestro analisis, el modelo tiende a subestimar las temperaturas máximas.
 
 Por suerte, la noticia resultó ser una fake news y no hubo que lamentar un aumento de los fallos en la 
-ciberseguirdad de tan bonitas ciudades. Lo que si muestra esta investigacion es la importancia de disponer 
+ciberseguridad de tan bonitas ciudades. Lo que si muestra esta investigacion es la importancia de disponer 
 de datos ajustados y de la gran complejidad de algo que parece tan intuitivo como calcular la temperatura el proximo año. 
 
 
