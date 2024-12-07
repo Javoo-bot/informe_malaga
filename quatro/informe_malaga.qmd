@@ -36,7 +36,7 @@ En verano de 2023 sale en un periodico local una fake news de que el aumento de 
 podria ser debido a las altas temperaturas. 
 
 ::: {#fig-ejemplo}
-![Noticia](images/news.png)
+![Noticia](news.png)
 :::
 
 #### Noticia sobre data leak
@@ -76,7 +76,7 @@ presenta la información con la que queremos trabajar. Al ser una estacion meteo
 si hay dias que faltan. 
 
 ::: {#fig-ejemplo}
-![Número de días](images/dias.png)
+![Número de días](dias.png)
 :::
 
 Entonces tenemos registros para todos los dias en Málaga, pero ¿hay localidades que esten menos representadas? Es decir, tenemos
@@ -112,7 +112,7 @@ Se observa que la tendencia de las estaciones es de tomar datos la mayoria de lo
 que corresponde a "Antequera Ayuntamiento". 
 
 ::: {#fig-ejemplo}
-![Estaciones meteorologicas](images/estacion.png)
+![Estaciones meteorologicas](estacion.png)
 :::
 
 En un principio se barajo la posibilidad de que la falta de registros podria 
@@ -155,7 +155,7 @@ por lo tanto hay que priorizar ciudades de baja altitud. En principio, las ciuda
 mas probabilidad de experimentar temperaturas mas altas.  
 
 ::: {#fig-ejemplo}
-![Altitud ciudades](images/altitud.png)
+![Altitud ciudades](altitud.png)
 :::
 
 El grafico muestra una clara tendencia donde las ciudades con menor altitud 
@@ -186,7 +186,7 @@ es simplemente la diferencia de la variaciond e la temperatura a lo largo del a�
 Al realizar el grafico vemos dos ciudades que llaman la atencion que son Torremolinos (49 m s. n. m) y Alora (172 m s. n. m.). 
 
 ::: {#fig-ejemplo}
-![Temperatura media](images/temperatura_media.png)
+![Temperatura media](temperatura_media.png)
 :::
 
 Tambien es llamativa "Malaga-Aeropuerto" pero dada la poca presencia de empresas en esa zona se descartó.
@@ -201,7 +201,7 @@ El valor llamtivo es Alpandeire que tiene casi 94 mm de precipitacion, pero las 
 fijado no presenten altas precipitaciones. 
 
 ::: {#fig-ejemplo}
-![Precipitacion](images/lluvia.png)
+![Precipitacion](lluvia.png)
 :::
 
 Entonces en su caso este no es un factor que pudiese ayudar a la bajada de temperaturas. 
@@ -240,7 +240,7 @@ La matriz ayuda a identificar que variables independientes tienen mayor influenc
 nuestras hipotesis tiene algo de verdad en los datos. 
 
 ::: {#fig-ejemplo}
-![Relacion entre variables](images/matriz.png)
+![Relacion entre variables](matriz.png)
 :::
 
 Lo que podemos ver en la matriz de correlacion es que no es necesario incluir en las predicciones los dos tipos de 
@@ -276,7 +276,7 @@ La regresión lineal muestra un coeficiente de determinación sorprendentemente 
 el 34% de la varianza. 
 
 ::: {#fig-ejemplo}
-![Regresion lineal](images/output.png)
+![Regresion lineal](output.png)
 :::
 
 Esto sugiere que la relación entre las variables predictoras y la temperatura es más compleja de lo esperado, 
@@ -293,7 +293,7 @@ El análisis de importancia de variables y el árbol de decisión revelan que la
 el indicador más influyente con un peso del 44%, seguido por la precipitación (20%) y la altitud (9%). 
 
 ::: {#fig-ejemplo}
-![Importancia variables](images/variables.png)
+![Importancia variables](variables.png)
 :::
 
 La humedad relativa tiene un impacto directo en la sensación térmica y la temperatura real, lo que explica su alta 
@@ -312,7 +312,7 @@ con temperaturas más altas.
 Lo más preocupante son las predicciones para Torremolinos y Álora. 
 
 ::: {#fig-ejemplo}
-![prediccion Torremolinos](images/torremolinos.png)
+![prediccion Torremolinos](torremolinos.png)
 :::
 
 En ambas ciudades, el modelo subestima sistemáticamente
