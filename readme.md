@@ -1,31 +1,47 @@
-# 📊 Informe sobre Ciberseguridad en Málaga 🌞
+# 🛡️ Cybersecurity in Málaga – Data Analysis Project
 
-¡Bienvenidos al análisis del panorama de ciberseguridad en Málaga! 🎯
+**URL**: [epictetushub.netlify.app](https://epictetushub.netlify.app/)
 
-📍 **Accede al informe completo aquí:**  
-[epictetushub.netlify.app](https://epictetushub.netlify.app/)
+## 📌 Project Overview
 
-Este informe proporciona un análisis detallado sobre el estado actual de la ciberseguridad en la región de Málaga, incluyendo tendencias, desafíos y oportunidades en el sector.
+This project presents an exploratory data analysis (EDA) on the current cybersecurity landscape in Málaga, Spain. The aim was to identify key trends, challenges, and opportunities in the region’s growing tech sector, using both open data and research references.
 
-## 🤔 ¿Qué hay aquí?
-Este proyecto contiene un análisis detallado sobre datos de Málaga, ¡con gráficos bonitos y todo! 📈
+## 🎯 Goal
 
-## 🚀 Características
-- 📑 Referencias bibliográficas bien organizadas
-- 💅 Estilos CSS para que se vea increíble
-- 📊 Visualizaciones de datos
-- 🎨 Diseño responsive y moderno
+To build a visually compelling and informative public report on cybersecurity in Málaga — blending data analysis, research, and web design to raise awareness and showcase local tech development.
 
-## 🛠️ Tecnologías utilizadas
-- CSS para el estilo ✨
-- Referencias en formato BibTeX 📚
-- Mucho ❤️ y creatividad
+## 📊 Key Features
 
-## 👩‍💻 Autor
-Hecho con 💖 por Javi
+* Data-driven insights on Málaga’s cybersecurity trends
+* Interactive and clean visualizations
+* Responsive web layout and modern design
+* Organized references using BibTeX
+* Deployed on Netlify as a public resource
 
-## 🎯 Objetivo
-Crear el informe más awesome sobre Málaga que jamás hayas visto 🎪
+## 🛠 Tools & Technologies
+
+* **Python** (for EDA and data cleaning, not shown in this version but extendable)
+* **HTML/CSS** for custom styling
+* **JavaScript / Chart.js or Plotly** (for interactive charts, if used)
+* **BibTeX** for academic-style referencing
+* **Netlify** for deployment
+
+## 📈 Sample Visualizations
+
+* Growth of cybersecurity events over time
+* Comparison of Málaga vs. national indicators
+* Risk trends and industry focus areas
+
+## 🧠 Skills Demonstrated
+
+* Public data analysis
+* Report structuring for a non-technical audience
+* Data storytelling
+* Frontend presentation for data projects
+* Research synthesis and citation handling
+
+## 👨‍💻 Author
+
+Created with ❤️ by **Javi Lobato**
 
 ---
-*¿Te ha gustado? ¡Dale una ⭐!*
